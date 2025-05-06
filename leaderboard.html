@@ -1,67 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Leaderboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensure proper scaling on mobile -->
-  <script type="module" src="firebase.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-image: url('background.jpg'); /* Replace with your image path or URL */
-      background-size: cover;          /* Ensures the background image covers the entire screen */
-      background-repeat: no-repeat;
-      background-attachment: fixed;    /* Keeps the background fixed on scroll */
-      background-position: center;
-      color: #000;
-      min-height: 100vh;               /* Ensures the body takes up at least the full height of the screen */
-      display: flex;
-      justify-content: center;         /* Centers content horizontally */
-      align-items: center;             /* Centers content vertically */
-      text-align: center;              /* Centers text */
-    }
-
-    .overlay {
-      background-color: rgba(255, 255, 255, 0.85); /* White transparent overlay */
-      padding: 20px;
-      margin: 20px;
-      border-radius: 8px;
-      max-width: 600px;
-      width: 100%;                     /* Ensures the overlay doesn't overflow */
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    }
-
-    #leaderboard div {
-      margin-bottom: 5px;
-    }
-
-    /* Add mobile responsiveness */
-    @media (max-width: 600px) {
-      .overlay {
-        padding: 15px;
-        margin: 10px;
-      }
-
-      h2 {
-        font-size: 1.5rem;
-      }
-
-      #leaderboard {
-        font-size: 1rem;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="overlay">
-    <h2>Leaderboard</h2>
-    <div id="leaderboard"></div>
-  </div>
-
+  <title>Public Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="module">
-    import {
-      db, collection, query, orderBy, onSnapshot
-    } from './firebase.js';
+    // Firebase config
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyDaRLmnE2t8v_bXtm_r_RrnuMhtJBfomug",
+    authDomain: "test2-74b30.firebaseapp.com",
+    projectId: "test2-74b30",
+    storageBucket: "test2-74b30.firebasestorage.app",
+    messagingSenderId: "776427276353",
+    appId: "1:776427276353:web:0c7285a031ff3271069ec0"
+  };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
     const leaderboardDiv = document.getElementById("leaderboard");
 
@@ -70,10 +27,33 @@
       leaderboardDiv.innerHTML = "";
       snapshot.forEach((docSnap, idx) => {
         const d = docSnap.data();
-        const points = d.points || 0;
-        leaderboardDiv.innerHTML += `<div>${idx + 1}. ID: ${docSnap.id} — ${points} pts</div>`;
+        leaderboardDiv.innerHTML += `<div>${idx + 1}. ${docSnap.id} — ${d.points || 0} pts</div>`;
       });
     });
   </script>
+  <style>
+    body {
+      font-family: Arial;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f4f4f4;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Leaderboard</h2>
+    <div id="leaderboard">Loading...</div>
+  </div>
 </body>
 </html>
