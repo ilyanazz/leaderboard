@@ -1,71 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Public Leaderboard</title>
+  <title>Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      padding: 40px 20px;
       margin: 0;
-      background: #f2f2f2;
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: 100vh;
     }
+
     .container {
-      background: #fff;
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      max-width: 500px;
-      width: 90%;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
     }
+
     h2 {
-      margin-top: 0;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
     }
-    #leaderboard div {
-      padding: 6px 0;
-      border-bottom: 1px solid #eee;
+
+    ol {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    li {
+      background: #ecf0f1;
+      margin-bottom: 12px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    li:hover {
+      background: #dce4e6;
+    }
+
+    .name {
+      font-weight: 500;
+    }
+
+    .points {
+      background: #3498db;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 14px;
+      min-width: 50px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Leaderboard</h2>
-    <div id="leaderboard">Loading...</div>
+    <ol id="leaderboardList"></ol>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  <script>
+    // Mock database
+    let users = {
+      user1: { name: 'John', points: 120 },
+      user2: { name: 'Alice', points: 180 },
+      user3: { name: 'Bob', points: 100 }
+    };
 
-    // 🔧 Replace with your own Firebase config:
-    const firebaseConfig = {
-  apiKey: "AIzaSyDaRLmnE2t8v_bXtm_r_RrnuMhtJBfomug",
-  authDomain: "test2-74b30.firebaseapp.com",
-  databaseURL: "https://test2-74b30-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "test2-74b30",
-  storageBucket: "test2-74b30.firebasestorage.app",
-  messagingSenderId: "776427276353",
-  appId: "1:776427276353:web:0c7285a031ff3271069ec0"
-};
+    function loadLeaderboard() {
+      const sortedUsers = Object.entries(users).sort((a, b) => b[1].points - a[1].points);
+      const list = document.getElementById('leaderboardList');
+      list.innerHTML = '';
+      for (const [id, data] of sortedUsers) {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span class="name">${data.name}</span>
+          <span class="points">${data.points} pts</span>
+        `;
+        list.appendChild(li);
+      }
+    }
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const leaderboardDiv = document.getElementById("leaderboard");
-
-    const q = query(collection(db, "participants"), orderBy("points", "desc"));
-    onSnapshot(q, (snapshot) => {
-      leaderboardDiv.innerHTML = "";
-      snapshot.forEach((docSnap, idx) => {
-        const d = docSnap.data();
-        leaderboardDiv.innerHTML += `<div>${idx + 1}. ${docSnap.id} — ${d.points || 0} pts</div>`;
-      });
-    });
+    loadLeaderboard();
   </script>
 </body>
 </html>
