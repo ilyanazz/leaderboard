@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Public Leaderboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    #leaderboard div {
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Leaderboard</h2>
+    <div id="leaderboard">Loading...</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // 🔧 Replace with your own Firebase config:
+    const firebaseConfig = {
+  apiKey: "AIzaSyDaRLmnE2t8v_bXtm_r_RrnuMhtJBfomug",
+  authDomain: "test2-74b30.firebaseapp.com",
+  databaseURL: "https://test2-74b30-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "test2-74b30",
+  storageBucket: "test2-74b30.firebasestorage.app",
+  messagingSenderId: "776427276353",
+  appId: "1:776427276353:web:0c7285a031ff3271069ec0"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const leaderboardDiv = document.getElementById("leaderboard");
+
+    const q = query(collection(db, "participants"), orderBy("points", "desc"));
+    onSnapshot(q, (snapshot) => {
+      leaderboardDiv.innerHTML = "";
+      snapshot.forEach((docSnap, idx) => {
+        const d = docSnap.data();
+        leaderboardDiv.innerHTML += `<div>${idx + 1}. ${docSnap.id} — ${d.points || 0} pts</div>`;
+      });
+    });
+  </script>
+</body>
+</html>
